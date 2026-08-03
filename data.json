@@ -1,5 +1,5 @@
 {
-  "version": "10.0",
+  "version": "12.0",
   "title": "Busfahrplan Monopoli - Capitolo",
   "valid_from": "2026-06-29",
   "valid_to": "2026-09-13",
@@ -3064,5 +3064,6 @@
         "verified": true
       }
     ]
-  }
+  },
+  "map_mode": "text_geocoding_external"
 }

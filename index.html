@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#12344d">
-<link rel="manifest" href="manifest.webmanifest?v=10">
+<link rel="manifest" href="manifest.webmanifest?v=12">
 <link rel="apple-touch-icon" href="icon.svg">
 <title>Busfahrplan Monopoli - Capitolo</title>
 <style>
@@ -50,13 +50,30 @@ h3{font-size:16px;margin:0}
 .route-stop{padding:9px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
 .search-note{margin-top:5px}
 .status{margin-top:10px;padding:10px 12px;border-radius:12px;background:#f6f8fa}
+.map-actions{display:grid;grid-template-columns:1fr;gap:9px}
+.map-actions button{margin:0}
+.map-preview{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:13px;background:#f6f8fa}
+.map-preview strong{display:block;margin-bottom:4px}
+.external-note{margin-top:10px}
+.combo{position:relative}
+.combo-input-wrap{display:grid;grid-template-columns:1fr auto;gap:0}
+.combo-input-wrap input{border-top-right-radius:0;border-bottom-right-radius:0}
+.combo-toggle{width:48px;margin:0;border:1px solid var(--line);border-left:0;border-radius:0 12px 12px 0;background:var(--soft);color:var(--ink);font-size:18px;padding:0}
+.combo-menu{position:absolute;z-index:20;left:0;right:0;top:calc(100% + 4px);max-height:250px;overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 28px rgba(17,42,61,.16);display:none}
+.combo.open .combo-menu{display:block}
+.combo-option{padding:11px 12px;border-top:1px solid var(--line);cursor:pointer}
+.combo-option:first-child{border-top:0}
+.combo-option:hover,.combo-option:focus{background:var(--soft);outline:none}
+.combo-empty{padding:12px;color:var(--muted)}
+
+@media(min-width:560px){.map-actions{grid-template-columns:1fr 1fr}}
 @media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <header>
 <h1>Busfahrplan Monopoli - Capitolo</h1>
-<p>Montag bis Samstag · Version 10.0</p>
+<p>Montag bis Samstag · Version 12.0</p>
 </header>
 <main>
 <section class="card">
@@ -95,15 +112,25 @@ Vom Hotel: Richtung Monopoli, Start „Torre Cintola“.
 </div>
 <div>
 <label for="fromInput">Von</label>
-<input id="fromInput" list="fromList" autocomplete="off" placeholder="Haltestelle eingeben">
-<datalist id="fromList"></datalist>
-<div class="muted search-note">Tippen, um die Liste zu filtern.</div>
+<div class="combo" id="fromCombo">
+  <div class="combo-input-wrap">
+    <input id="fromInput" autocomplete="off" placeholder="Haltestelle eingeben" aria-autocomplete="list" aria-expanded="false">
+    <button id="fromToggle" class="combo-toggle" type="button" aria-label="Haltestellenliste öffnen">⌄</button>
+  </div>
+  <div id="fromMenu" class="combo-menu" role="listbox"></div>
+</div>
+<div class="muted search-note">Tippen oder Pfeil öffnen.</div>
 </div>
 <div>
 <label for="toInput">Nach</label>
-<input id="toInput" list="toList" autocomplete="off" placeholder="Haltestelle eingeben">
-<datalist id="toList"></datalist>
-<div class="muted search-note">Tippen, um die Liste zu filtern.</div>
+<div class="combo" id="toCombo">
+  <div class="combo-input-wrap">
+    <input id="toInput" autocomplete="off" placeholder="Haltestelle eingeben" aria-autocomplete="list" aria-expanded="false">
+    <button id="toToggle" class="combo-toggle" type="button" aria-label="Haltestellenliste öffnen">⌄</button>
+  </div>
+  <div id="toMenu" class="combo-menu" role="listbox"></div>
+</div>
+<div class="muted search-note">Tippen oder Pfeil öffnen.</div>
 </div>
 </div>
 
@@ -129,9 +156,36 @@ Vom Hotel: Richtung Monopoli, Start „Torre Cintola“.
 <section class="card">
 <h2>Abfahrten an einer Haltestelle</h2>
 <label for="stopInput">Haltestelle</label>
-<input id="stopInput" list="stopList" autocomplete="off" placeholder="Haltestelle eingeben">
-<datalist id="stopList"></datalist>
+<div class="combo" id="stopCombo">
+  <div class="combo-input-wrap">
+    <input id="stopInput" autocomplete="off" placeholder="Haltestelle eingeben" aria-autocomplete="list" aria-expanded="false">
+    <button id="stopToggle" class="combo-toggle" type="button" aria-label="Haltestellenliste öffnen">⌄</button>
+  </div>
+  <div id="stopMenu" class="combo-menu" role="listbox"></div>
+</div>
 <div id="departures"></div>
+</section>
+
+
+<section class="card">
+<h2>Kartenansicht</h2>
+<p class="muted">
+Die Karte verwendet den Haltestellennamen als Suchbegriff. Dadurch ist eine grobe Orientierung möglich, auch ohne gespeicherte GPS-Koordinaten.
+</p>
+<div id="mapPreview" class="map-preview">
+<strong>Ausgewählte Haltestelle</strong>
+<span id="mapStopName">Noch keine Haltestelle ausgewählt.</span>
+</div>
+<div class="map-actions">
+<button id="mapFrom" class="brand" type="button">Start auf Karte</button>
+<button id="mapTo" class="brand" type="button">Ziel auf Karte</button>
+<button id="mapDeparture" class="secondary" type="button">Abfahrtshaltestelle auf Karte</button>
+<button id="mapHotel" class="secondary" type="button">Hotel-Haltestelle auf Karte</button>
+<button id="nearbyStops" class="secondary" type="button">Bushaltestellen in der Nähe</button>
+</div>
+<div class="muted external-note">
+Die Schaltflächen öffnen Apple Karten. Die genaue Position hängt von den Kartendaten und der Erkennung des Haltestellennamens ab.
+</div>
 </section>
 
 <section class="card notice">
@@ -152,6 +206,7 @@ const stopInput=$("stopInput");
 const hotelHintText=$("hotelHintText");
 const favoriteSelect=$("favoriteSelect");
 const favoriteStatus=$("favoriteStatus");
+const mapStopName=$("mapStopName");
 
 const STORAGE={
   last:"busfahrplan:lastConnection:v10",
@@ -195,12 +250,79 @@ function findStop(value){
   return allStopItems().find(item=>normalize(item.name)===key || normalize(item.canonical)===key) || null;
 }
 
-function populateDatalists(){
-  const options=allStopItems().map(item=>`<option value="${item.name}"></option>`).join("");
-  $("fromList").innerHTML=options;
-  $("toList").innerHTML=options;
-  $("stopList").innerHTML=options;
+function comboOptions(filter=""){
+  const key=normalize(filter);
+  return allStopItems().filter(item=>!key || normalize(item.name).includes(key));
 }
+
+function renderComboMenu(menu,input){
+  const items=comboOptions(input.value);
+  menu.innerHTML=items.length
+    ?items.map(item=>`<div class="combo-option" role="option" tabindex="0" data-name="${item.name.replace(/"/g,'&quot;')}">${item.name}</div>`).join("")
+    :'<div class="combo-empty">Keine passende Haltestelle gefunden.</div>';
+}
+
+function openCombo(combo,input,menu){
+  document.querySelectorAll(".combo.open").forEach(other=>{if(other!==combo) other.classList.remove("open")});
+  renderComboMenu(menu,input);
+  combo.classList.add("open");
+  input.setAttribute("aria-expanded","true");
+}
+
+function closeCombo(combo,input){
+  combo.classList.remove("open");
+  input.setAttribute("aria-expanded","false");
+}
+
+function selectComboValue(combo,input,value){
+  input.value=value;
+  closeCombo(combo,input);
+  updateMapPreview();
+}
+
+function setupCombo(comboId,inputId,toggleId,menuId,onSelect){
+  const combo=$(comboId),input=$(inputId),toggle=$(toggleId),menu=$(menuId);
+
+  input.addEventListener("focus",()=>openCombo(combo,input,menu));
+  input.addEventListener("input",()=>openCombo(combo,input,menu));
+  toggle.addEventListener("click",()=>{
+    combo.classList.contains("open") ? closeCombo(combo,input) : openCombo(combo,input,menu);
+  });
+
+  menu.addEventListener("click",event=>{
+    const option=event.target.closest(".combo-option");
+    if(!option) return;
+    selectComboValue(combo,input,option.dataset.name);
+    if(onSelect) onSelect();
+  });
+
+  menu.addEventListener("keydown",event=>{
+    if(event.key!=="Enter" && event.key!==" ") return;
+    const option=event.target.closest(".combo-option");
+    if(!option) return;
+    event.preventDefault();
+    selectComboValue(combo,input,option.dataset.name);
+    if(onSelect) onSelect();
+  });
+
+  input.addEventListener("keydown",event=>{
+    if(event.key==="ArrowDown"){
+      event.preventDefault();
+      openCombo(combo,input,menu);
+      menu.querySelector(".combo-option")?.focus();
+    }else if(event.key==="Escape"){
+      closeCombo(combo,input);
+    }else if(event.key==="Enter"){
+      const first=menu.querySelector(".combo-option");
+      if(combo.classList.contains("open") && first){
+        event.preventDefault();
+        selectComboValue(combo,input,first.dataset.name);
+        if(onSelect) onSelect();
+      }
+    }
+  });
+}
+
 
 function updateHotelHint(){
   hotelHintText.textContent=direction.value==="Andata"
@@ -305,7 +427,6 @@ function loadFavorite(){
 
 function updateDirectionUi(resetInputs=true){
   updateHotelHint();
-  populateDatalists();
   if(resetInputs){
     const r=rows();
     fromInput.value=r[0]?.stop||"";
@@ -453,29 +574,90 @@ function swapStops(){
   searchConnections();
 }
 
+
+function canonicalStopName(value){
+  const item=findStop(value);
+  return item ? item.canonical : "";
+}
+
+function appleMapsSearch(query){
+  const cleaned=(query||"").trim();
+  if(!cleaned){
+    alert("Bitte zuerst eine Haltestelle auswählen.");
+    return;
+  }
+  const search=`${cleaned}, Monopoli, Bari, Italia`;
+  const url=`https://maps.apple.com/?q=${encodeURIComponent(search)}`;
+  window.open(url,"_blank","noopener");
+}
+
+function openMapForInput(input){
+  const stopName=canonicalStopName(input.value);
+  mapStopName.textContent=stopName || "Keine gültige Haltestelle ausgewählt.";
+  appleMapsSearch(stopName);
+}
+
+function openHotelMap(){
+  const stopName=direction.value==="Andata" ? "Fronte Torre Cintola" : "Torre Cintola";
+  mapStopName.textContent=stopName;
+  appleMapsSearch(stopName);
+}
+
+function openNearbyStops(){
+  mapStopName.textContent="Bushaltestellen in der aktuellen Umgebung";
+  window.open("https://maps.apple.com/?q=Bushaltestelle","_blank","noopener");
+}
+
+function updateMapPreview(){
+  const stopName=canonicalStopName(stopInput.value)
+    || canonicalStopName(fromInput.value)
+    || canonicalStopName(toInput.value);
+  mapStopName.textContent=stopName || "Noch keine Haltestelle ausgewählt.";
+}
+
 direction.addEventListener("change",()=>updateDirectionUi(true));
 $("nowButton").addEventListener("click",setNow);
 $("search").addEventListener("click",searchConnections);
 $("swap").addEventListener("click",swapStops);
 $("toHotel").addEventListener("click",()=>selectHotelMode("to"));
 $("fromHotel").addEventListener("click",()=>selectHotelMode("from"));
+$("mapFrom").addEventListener("click",()=>openMapForInput(fromInput));
+$("mapTo").addEventListener("click",()=>openMapForInput(toInput));
+$("mapDeparture").addEventListener("click",()=>openMapForInput(stopInput));
+$("mapHotel").addEventListener("click",openHotelMap);
+$("nearbyStops").addEventListener("click",openNearbyStops);
+fromInput.addEventListener("change",updateMapPreview);
+toInput.addEventListener("change",updateMapPreview);
 $("saveFavorite").addEventListener("click",saveFavorite);
 favoriteSelect.addEventListener("change",loadFavorite);
-stopInput.addEventListener("change",showDepartures);
-stopInput.addEventListener("blur",showDepartures);
+
+
+setupCombo("fromCombo","fromInput","fromToggle","fromMenu");
+setupCombo("toCombo","toInput","toToggle","toMenu");
+setupCombo("stopCombo","stopInput","stopToggle","stopMenu",()=>{showDepartures();updateMapPreview();});
+
+document.addEventListener("click",event=>{
+  document.querySelectorAll(".combo.open").forEach(combo=>{
+    if(!combo.contains(event.target)){
+      combo.classList.remove("open");
+      combo.querySelector("input")?.setAttribute("aria-expanded","false");
+    }
+  });
+});
 
 setNow();
 renderFavorites();
 updateDirectionUi(true);
 restoreLastConnection();
 showDepartures();
+updateMapPreview();
 
 if("serviceWorker" in navigator && location.protocol.startsWith("http")){
   navigator.serviceWorker.getRegistrations()
     .then(registrations=>Promise.all(registrations.map(registration=>registration.unregister())))
     .then(()=>caches.keys())
     .then(keys=>Promise.all(keys.map(key=>caches.delete(key))))
-    .then(()=>navigator.serviceWorker.register("service-worker.js?v=10"));
+    .then(()=>navigator.serviceWorker.register("service-worker.js?v=12"));
 }
 </script>
 </body>

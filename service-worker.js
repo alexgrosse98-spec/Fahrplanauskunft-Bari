@@ -1,5 +1,5 @@
-const CACHE='busfahrplan-monopoli-capitolo-v10';
-const FILES=['./','./index.html?v=10','./data.json?v=10','./manifest.webmanifest?v=10','./icon.svg'];
+const CACHE='busfahrplan-monopoli-capitolo-v12';
+const FILES=['./','./index.html?v=12','./data.json?v=12','./manifest.webmanifest?v=12','./icon.svg'];
 self.addEventListener('install',event=>{
   self.skipWaiting();
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)));
