@@ -1,7 +1,7 @@
 {
   "name": "Busfahrplan Monopoli - Capitolo",
   "short_name": "Busfahrplan",
-  "start_url": "./index.html?v=9",
+  "start_url": "./index.html?v=10",
   "display": "standalone",
   "background_color": "#eef3f6",
   "theme_color": "#12344d",
