@@ -684,28 +684,28 @@
       {
         "stop": "Via C. Pirrelli civ. 26",
         "times": [
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null
+          "06:55",
+          "07:25",
+          "08:30",
+          "09:10",
+          "09:40",
+          "10:10",
+          "11:20",
+          "12:00",
+          "13:20",
+          "13:50",
+          "14:25",
+          "15:40",
+          "16:10",
+          "17:25",
+          "18:20",
+          "19:10",
+          "20:20",
+          "20:55",
+          "22:20",
+          "22:55"
         ],
-        "confidence": "Anhand des hochauflösenden Fahrplanfotos geprüft"
+        "confidence": "Zeitreihe anhand des hochauflösenden Fahrplanfotos ergänzt"
       },
       {
         "stop": "Via Cialdini civ. 114",
@@ -2194,28 +2194,32 @@
       {
         "stop": "Via C. Pirrelli civ. 5",
         "times": [
+          "07:55",
+          null,
+          "09:35",
+          null,
+          "10:45",
+          "11:15",
+          null,
+          "13:05",
+          "14:25",
           null,
           null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
+          "16:46",
+          "17:16",
+          "18:31",
+          "19:26",
+          "20:16",
+          "21:26",
+          "21:56",
+          "23:21",
           null
         ],
-        "confidence": "Anhand des hochauflösenden Fahrplanfotos geprüft"
+        "confidence": "Zeitreihe anhand des hochauflösenden Fahrplanfotos ergänzt",
+        "aliases": [
+          "Via C. Pirrelli civ. 26",
+          "Via C. Pirrelli"
+        ]
       },
       {
         "stop": "Via Camicia civ. 15",
@@ -2843,5 +2847,5 @@
       }
     ]
   },
-  "data_note": "Haltestellen vollständig mit den hochauflösenden Fahrplanfotos abgeglichen: 53 Haltestellen Richtung Capitolo und 56 Haltestellen Richtung Monopoli. Die Auswahlfelder sind alphabetisch sortiert; die interne Streckenreihenfolge bleibt erhalten."
+  "data_note": "Die Haltestellen Via C. Pirrelli civ. 26 und Via C. Pirrelli civ. 5 wurden mit den im Foto lesbaren Zeiten ergänzt. In Richtung Monopoli wird civ. 5 zusätzlich über den Suchbegriff civ. 26 gefunden. Bei unvollständigen Zielzeiten zeigt die App nun trotzdem vorhandene Abfahrten mit einem klaren Hinweis an."
 }
