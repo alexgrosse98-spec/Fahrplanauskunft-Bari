@@ -1,10 +1,10 @@
 {
-  "name": "Digitale Fahrplanauskunft A1/A2",
+  "name": "Fahrplanauskunft A1/A2",
   "short_name": "Fahrplan A1/A2",
-  "start_url": "./index.html",
+  "start_url": "./index.html?v=8",
   "display": "standalone",
-  "background_color": "#f3f6f8",
-  "theme_color": "#123a5a",
+  "background_color": "#eef3f6",
+  "theme_color": "#12344d",
   "icons": [
     {
       "src": "icon.svg",
